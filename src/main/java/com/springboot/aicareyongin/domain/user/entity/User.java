@@ -28,19 +28,22 @@ public class User extends BaseTimeEntity {
     @Column(name = "user_id")
     private Long id;
 
-    @Column(name = "email", nullable = false, length = 255)
+    @Column(name = "kakao_id", unique = true)
+    private Long kakaoId;
+
+    @Column(name = "email", length = 255)
     private String email;
 
-    @Column(name = "password_hash", nullable = false, length = 255)
+    @Column(name = "password_hash", length = 255)
     private String passwordHash;
 
     @Column(name = "nickname", nullable = false, length = 50)
     private String nickname;
 
-    @Column(name = "terms_agreed_at", nullable = false, columnDefinition = "timestamptz")
+    @Column(name = "terms_agreed_at", columnDefinition = "datetime(6)")
     private OffsetDateTime termsAgreedAt;
 
-    @Column(name = "privacy_agreed_at", nullable = false, columnDefinition = "timestamptz")
+    @Column(name = "privacy_agreed_at", columnDefinition = "datetime(6)")
     private OffsetDateTime privacyAgreedAt;
 
     @Builder.Default
@@ -53,9 +56,26 @@ public class User extends BaseTimeEntity {
     @Column(name = "status", nullable = false, length = 10)
     private String status = "ACTIVE";
 
-    @Column(name = "last_login_at", columnDefinition = "timestamptz")
+    @Column(name = "last_login_at", columnDefinition = "datetime(6)")
     private OffsetDateTime lastLoginAt;
 
-    @Column(name = "deleted_at", columnDefinition = "timestamptz")
+    @Column(name = "deleted_at", columnDefinition = "datetime(6)")
     private OffsetDateTime deletedAt;
+
+    public boolean isLoginAllowed() {
+        return "ACTIVE".equals(status) && deletedAt == null;
+    }
+
+    public void recordLogin(OffsetDateTime now) {
+        this.lastLoginAt = now;
+    }
+
+    public void agreeTerms(OffsetDateTime now) {
+        if (termsAgreedAt == null) {
+            termsAgreedAt = now;
+        }
+        if (privacyAgreedAt == null) {
+            privacyAgreedAt = now;
+        }
+    }
 }

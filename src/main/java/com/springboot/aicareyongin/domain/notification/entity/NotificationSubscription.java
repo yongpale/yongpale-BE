@@ -55,7 +55,7 @@ public class NotificationSubscription extends BaseCreatedTimeEntity {
     private String endpoint;
 
     @JdbcTypeCode(SqlTypes.JSON)
-    @Column(name = "keys", columnDefinition = "jsonb")
+    @Column(name = "`keys`", columnDefinition = "json")
     private String keys;
 
     @Column(name = "user_agent", length = 300)
@@ -71,6 +71,6 @@ public class NotificationSubscription extends BaseCreatedTimeEntity {
     @Column(name = "fail_count", nullable = false)
     private Short failCount = (short) 0;
 
-    @Column(name = "last_success_at", columnDefinition = "timestamptz")
+    @Column(name = "last_success_at", columnDefinition = "datetime(6)")
     private OffsetDateTime lastSuccessAt;
 }

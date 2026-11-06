@@ -67,6 +67,6 @@ public class KnowledgeDocument {
 
     @CreationTimestamp
     @ColumnDefault("now()")
-    @Column(name = "fetched_at", nullable = false, columnDefinition = "timestamptz")
+    @Column(name = "fetched_at", nullable = false, columnDefinition = "datetime(6)")
     private OffsetDateTime fetchedAt;
 }

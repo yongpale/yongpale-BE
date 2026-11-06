@@ -57,6 +57,6 @@ public class CalendarEntry extends BaseCreatedTimeEntity {
     @Column(name = "status", nullable = false, length = 10)
     private String status = "ACTIVE";
 
-    @Column(name = "last_notified_at", columnDefinition = "timestamptz")
+    @Column(name = "last_notified_at", columnDefinition = "datetime(6)")
     private OffsetDateTime lastNotifiedAt;
 }

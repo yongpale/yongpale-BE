@@ -13,6 +13,6 @@ public abstract class BaseCreatedTimeEntity {
 
     @CreationTimestamp
     @ColumnDefault("now()")
-    @Column(name = "created_at", nullable = false, columnDefinition = "timestamptz", updatable = false)
+    @Column(name = "created_at", nullable = false, columnDefinition = "datetime(6)", updatable = false)
     private OffsetDateTime createdAt;
 }
