@@ -110,7 +110,7 @@ public class Facility extends BaseTimeEntity {
     private LocalDate dataBaseDate;
 
     @JdbcTypeCode(SqlTypes.JSON)
-    @Column(name = "raw", columnDefinition = "jsonb")
+    @Column(name = "raw", columnDefinition = "json")
     private String raw;
 
     @Builder.Default

@@ -56,7 +56,7 @@ public class Policy extends BaseTimeEntity {
     private Integer benefitAmount;
 
     @JdbcTypeCode(SqlTypes.JSON)
-    @Column(name = "required_documents", nullable = false, columnDefinition = "jsonb")
+    @Column(name = "required_documents", nullable = false, columnDefinition = "json")
     private String requiredDocuments;
 
     @Column(name = "apply_method_text", columnDefinition = "text")
@@ -71,8 +71,9 @@ public class Policy extends BaseTimeEntity {
     @Column(name = "expansion_note", length = 300)
     private String expansionNote;
 
-    @JdbcTypeCode(SqlTypes.ARRAY)
-    @Column(name = "target_region_ids", columnDefinition = "bigint[]")
+    // MariaDB에서는 지역 ID 목록을 JSON 배열로 저장한다.
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(name = "target_region_ids", columnDefinition = "json")
     private Long[] targetRegionIds;
 
     @Column(name = "apply_url", length = 500)

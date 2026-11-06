@@ -13,6 +13,6 @@ public abstract class BaseTimeEntity extends BaseCreatedTimeEntity {
 
     @UpdateTimestamp
     @ColumnDefault("now()")
-    @Column(name = "updated_at", nullable = false, columnDefinition = "timestamptz")
+    @Column(name = "updated_at", nullable = false, columnDefinition = "datetime(6)")
     private OffsetDateTime updatedAt;
 }

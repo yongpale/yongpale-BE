@@ -43,11 +43,11 @@ public class DocumentChunk {
     @Column(name = "content", nullable = false, columnDefinition = "text")
     private String content;
 
-    // ERD의 text 타입을 사용하며, pgvector 도입 시 vector(1536) 매핑으로 변경한다.
+    // 임베딩은 우선 ERD의 text 타입으로 저장한다.
     @Column(name = "embedding", columnDefinition = "text")
     private String embedding;
 
     @JdbcTypeCode(SqlTypes.JSON)
-    @Column(name = "metadata", nullable = false, columnDefinition = "jsonb")
+    @Column(name = "metadata", nullable = false, columnDefinition = "json")
     private String metadata;
 }

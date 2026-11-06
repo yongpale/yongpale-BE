@@ -56,7 +56,7 @@ public class ChatMessage extends BaseCreatedTimeEntity {
     private Boolean answerable;
 
     @JdbcTypeCode(SqlTypes.JSON)
-    @Column(name = "citations", nullable = false, columnDefinition = "jsonb")
+    @Column(name = "citations", nullable = false, columnDefinition = "json")
     private String citations;
 
     @Column(name = "model_name", length = 50)
