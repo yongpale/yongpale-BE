@@ -30,6 +30,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/api/v1/auth/kakao", "/api/v1/auth/kakao/callback-page",
                                 "/oauth2/authorization/kakao", "/error").permitAll()
+                        // Swagger UI와 API 문서. 문서만 공개하고 API 호출에는 여전히 JWT가 필요하다.
+                        .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .anyRequest().authenticated())
                 .exceptionHandling(errors -> errors.authenticationEntryPoint((request, response, exception) ->
                         response.sendError(HttpServletResponse.SC_UNAUTHORIZED)))
