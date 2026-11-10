@@ -42,7 +42,7 @@ public class HouseholdController {
     }
 
     @PutMapping
-    @Operation(summary = "내 가족 정보 전체 수정", description = "자녀 목록도 요청 순서대로 전체 교체합니다.")
+    @Operation(summary = "내 가족 정보 전체 수정", description = "자녀 목록과 돌봄 시간까지 전체 교체합니다. 시간은 HH:mm으로 입력하며, 두 시간 생략 시 미설정으로 저장합니다.")
     public HouseholdResponse update(@AuthenticationPrincipal Jwt jwt,
                                     @Valid @RequestBody HouseholdRequest request) {
         return service.update(userId(jwt), request);
