@@ -10,11 +10,14 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVFormat;
@@ -27,7 +30,9 @@ import org.springframework.transaction.annotation.Transactional;
 import tools.jackson.databind.json.JsonMapper;
 
 /**
- * 앱 시작 시 facilities 테이블이 비어 있으면 data/facilities.csv를 적재한다.
+ * 앱 시작 시 facilities 테이블이 비어 있으면 data/facilities.csv를 적재하고,
+ * 이미 적재돼 있으면 비어 있는 좌표만 CSV 값으로 채운다.
+ * 좌표는 scripts/GeocodeFacilities.java로 카카오 로컬 API에서 받아 CSV에 넣는다.
  * CSV는 yongpale-AI 저장소의 data/processed/facilities.csv를 복사한 것이다.
  */
 @Slf4j
@@ -43,22 +48,43 @@ public class FacilityCsvLoader implements ApplicationRunner {
     @Override
     @Transactional
     public void run(ApplicationArguments args) throws IOException {
-        if (facilityRepository.count() > 0) {
+        List<CSVRecord> rows = readRows();
+        if (facilityRepository.count() == 0) {
+            List<Facility> facilities = rows.stream().map(this::toFacility).toList();
+            facilityRepository.saveAll(facilities);
+            log.info("시설 데이터 {}곳 적재 완료", facilities.size());
             return;
         }
+        backfillCoordinates(rows);
+    }
 
-        List<Facility> facilities = new ArrayList<>();
+    /**
+     * 좌표 없이 먼저 적재된 시설에 CSV의 좌표를 채운다. CSV id(source_ref_id)로 시설을 찾는다.
+     * 다른 컬럼과 이미 있는 좌표는 건드리지 않는다.
+     */
+    private void backfillCoordinates(List<CSVRecord> rows) {
+        Map<String, Facility> bySourceRefId = facilityRepository.findAll().stream()
+                .filter(f -> f.getSourceRefId() != null)
+                .collect(Collectors.toMap(Facility::getSourceRefId, Function.identity(), (a, b) -> a));
+        int filled = 0;
+        for (CSVRecord row : rows) {
+            Facility facility = bySourceRefId.get(text(row, "id"));
+            if (facility != null && facility.fillCoordinatesIfEmpty(decimal(row, "lat"), decimal(row, "lng"))) {
+                filled++;
+            }
+        }
+        if (filled > 0) {
+            log.info("시설 좌표 {}곳 채움", filled);
+        }
+    }
+
+    private List<CSVRecord> readRows() throws IOException {
         try (Reader reader = new BufferedReader(new InputStreamReader(
                 new ClassPathResource(CSV_PATH).getInputStream(), StandardCharsets.UTF_8))) {
             skipBom(reader);
             CSVFormat format = CSVFormat.DEFAULT.builder().setHeader().setSkipHeaderRecord(true).build();
-            for (CSVRecord row : format.parse(reader)) {
-                facilities.add(toFacility(row));
-            }
+            return format.parse(reader).getRecords();
         }
-
-        facilityRepository.saveAll(facilities);
-        log.info("시설 데이터 {}곳 적재 완료", facilities.size());
     }
 
     private Facility toFacility(CSVRecord row) {
@@ -72,6 +98,8 @@ public class FacilityCsvLoader implements ApplicationRunner {
                 .dongName(text(row, "dong"))
                 .address(text(row, "address"))
                 .phone(text(row, "phone"))
+                .latitude(decimal(row, "lat"))
+                .longitude(decimal(row, "lng"))
                 .capacity(integer(row, "capacity"))
                 .dataBaseDate(LocalDate.parse(text(row, "verified_at")))
                 .raw(jsonMapper.writeValueAsString(toDetail(row)))
@@ -116,6 +144,12 @@ public class FacilityCsvLoader implements ApplicationRunner {
     private Integer integer(CSVRecord row, String column) {
         String value = text(row, column);
         return value == null ? null : (int) Double.parseDouble(value);
+    }
+
+    /** 위도·경도. 빈 칸은 null */
+    private BigDecimal decimal(CSVRecord row, String column) {
+        String value = text(row, column);
+        return value == null ? null : new BigDecimal(value);
     }
 
     /** "True" / "False" / 빈 칸(정보 없음) */

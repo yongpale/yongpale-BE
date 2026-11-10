@@ -117,4 +117,14 @@ public class Facility extends BaseTimeEntity {
     @ColumnDefault("true")
     @Column(name = "is_active", nullable = false)
     private boolean isActive = true;
+
+    /** 좌표가 비어 있을 때만 채운다. 이미 있는 좌표는 덮어쓰지 않는다. */
+    public boolean fillCoordinatesIfEmpty(BigDecimal latitude, BigDecimal longitude) {
+        if (latitude == null || longitude == null || (this.latitude != null && this.longitude != null)) {
+            return false;
+        }
+        this.latitude = latitude;
+        this.longitude = longitude;
+        return true;
+    }
 }
