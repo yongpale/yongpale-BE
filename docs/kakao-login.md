@@ -1,6 +1,6 @@
 # 카카오 로그인 및 JWT 인증
 
-카카오 로그인만 제공한다. 로그인 성공 시 서비스용 HS256 JWT Access Token을 JSON으로 반환한다. 카카오 Access Token은 서비스 인증에 사용하거나 응답에 포함하지 않는다.
+카카오 로그인만 제공한다. 로그인 성공 시 서비스용 HS256 JWT Access Token과 서비스용 Refresh Token을 JSON으로 반환한다. 카카오 Access Token은 서비스 인증에 사용하거나 응답에 포함하지 않는다.
 
 ## 실행 준비
 
@@ -48,6 +48,8 @@ GET /api/v1/auth/kakao
   "tokenType": "Bearer",
   "accessToken": "eyJ...",
   "expiresIn": 1800,
+  "refreshToken": "로그인UUID.임의의비밀값",
+  "refreshExpiresIn": 1209600,
   "user": {
     "id": 1,
     "nickname": "민재",
@@ -71,8 +73,10 @@ Authorization: Bearer <accessToken>
 | --- | --- |
 | `GET /api/v1/auth/kakao` | 브라우저에서 카카오 로그인 시작 |
 | `GET /api/v1/auth/kakao/callback-page` | 카카오 콜백 처리, JWT 발급 |
-| `GET /api/v1/auth/me` | 로그인 회원 정보와 약관 동의 필요 여부 조회 |
+| `GET /api/v1/auth/me` | 마이페이지: 회원·가족 정보와 집계 값 조회 |
 | `POST /api/v1/auth/terms` | 서비스 이용약관·개인정보 수집 동의 저장 |
+| `POST /api/v1/auth/refresh` | Refresh Token으로 새 토큰 쌍 발급 |
+| `POST /api/v1/auth/logout` | 현재 로그인 폐기 |
 
 `me`, `terms`에는 JWT가 필요하다. 토큰이 없거나 서명·발급자·만료 검증에 실패하면 401이다. 해당 회원이 삭제되었거나 비활성 상태이면 `me`, `terms`는 거부한다. 그 외 경로도 기본적으로 JWT 인증이 필요하다.
 
@@ -90,8 +94,8 @@ Content-Type: application/json
 
 ## 현재 범위 및 검증
 
-- Access Token 유효기간은 30분이다. Refresh Token과 재발급 API는 포함하지 않는다. 만료 시 다시 카카오 로그인한다.
-- 로그아웃 시 클라이언트가 보관한 Access Token을 제거한다. 서버에서 이미 발급한 토큰을 즉시 폐기하는 기능과 카카오 연결 해제는 포함하지 않는다.
+- Access Token 기본 유효기간은 30분이며 Refresh Token은 14일이다. 재발급·로그아웃 요청 형식과 추가 DB 테이블은 [토큰 관리 문서](token-sessions.md)를 참고한다.
+- 로그아웃 API는 해당 로그인의 Access Token·Refresh Token을 즉시 거부한다. 다른 기기 로그인은 유지하며 카카오 계정 로그아웃·연결 해제는 수행하지 않는다.
 - 프론트 서버 주소가 정해지지 않아 별도 CORS 허용은 설정하지 않았다. 다른 origin에서 API를 호출하려면 해당 origin에 대한 설정이 필요하다.
 - 자동 테스트는 외부 카카오 서버를 호출하지 않는다. 실제 REST API 키·Client Secret·MariaDB을 설정한 후 브라우저에서 최초 가입과 재로그인을 확인해야 한다.
 
@@ -102,3 +106,5 @@ Content-Type: application/json
 JSON 필드는 `json`, 지역 ID 목록 `Long[]`도 JSON 배열로 저장한다. 시간은 `datetime(6)`에 UTC로 정규화해 저장하며 Java에서는 `OffsetDateTime`을 사용한다. DB에는 원래의 시간대 오프셋을 따로 보존하지 않는다. ERD 원본 파일은 변경하지 않았다.
 
 참고: [MariaDB JSON 타입](https://mariadb.com/docs/server/reference/data-types/string-data-types/json), [Hibernate 시간대 저장 설정](https://docs.hibernate.org/orm/7.4/userguide/html_single/#basic-datetime-time-zone-storage).
+
+마이페이지의 지역·자녀 학년 및 개발 중인 집계 항목은 [마이페이지 응답 문서](my-page.md)를 참고한다.
