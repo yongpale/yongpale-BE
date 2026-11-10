@@ -13,6 +13,7 @@ import com.springboot.aicareyongin.domain.region.repository.RegionRepository;
 import com.springboot.aicareyongin.domain.user.entity.User;
 import com.springboot.aicareyongin.domain.user.repository.UserRepository;
 import java.util.ArrayList;
+import java.time.LocalTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -83,6 +84,9 @@ public class HouseholdService {
         profile.updateSituations(request.situations().contains(HouseholdSituation.DUAL_INCOME),
                 request.situations().contains(HouseholdSituation.SINGLE_PARENT),
                 request.situations().contains(HouseholdSituation.MULTI_CHILD));
+        profile.updateCareNeedTime(
+                request.careNeedStartTime() == null ? null : LocalTime.parse(request.careNeedStartTime()),
+                request.careNeedEndTime() == null ? null : LocalTime.parse(request.careNeedEndTime()));
     }
 
     private List<Child> saveChildren(HouseholdProfile profile, HouseholdRequest request) {
