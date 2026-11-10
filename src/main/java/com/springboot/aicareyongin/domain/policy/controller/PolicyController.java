@@ -1,5 +1,6 @@
 package com.springboot.aicareyongin.domain.policy.controller;
 
+import com.springboot.aicareyongin.domain.policy.dto.PolicyAiSummaryResponse;
 import com.springboot.aicareyongin.domain.policy.dto.PolicyDetailResponse;
 import com.springboot.aicareyongin.domain.policy.dto.PolicyMatchListResponse;
 import com.springboot.aicareyongin.domain.policy.dto.PolicyMatchResponse;
@@ -8,6 +9,7 @@ import com.springboot.aicareyongin.domain.policy.dto.RequiredDocumentsResponse;
 import com.springboot.aicareyongin.domain.policy.enums.PolicyCategory;
 import com.springboot.aicareyongin.domain.policy.service.PolicyMatchService;
 import com.springboot.aicareyongin.domain.policy.service.PolicyService;
+import com.springboot.aicareyongin.domain.policy.service.PolicySummaryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -33,6 +35,7 @@ public class PolicyController {
 
     private final PolicyService policyService;
     private final PolicyMatchService policyMatchService;
+    private final PolicySummaryService policySummaryService;
 
     @GetMapping
     @Operation(summary = "정책 목록 조회", description = "모든 필터는 선택입니다. 제목순으로 정렬합니다. JWT 인증이 필요합니다.")
@@ -59,6 +62,13 @@ public class PolicyController {
             + "정책이나 가구 정보가 없으면 404입니다. JWT 인증이 필요합니다.")
     public PolicyMatchResponse getMatch(@AuthenticationPrincipal Jwt jwt, @PathVariable Long policyId) {
         return policyMatchService.getMatch(userId(jwt), policyId);
+    }
+
+    @GetMapping("/{policyId}/summary")
+    @Operation(summary = "AI 정책 요약", description = "신청 자격·지원 혜택·필요 서류·신청 기간 요약과 가구 맞춤 팁입니다. "
+            + "가구 정보가 없으면 맞춤 팁(tip)과 판정(status) 없이 요약만 반환합니다. 정책이 없으면 404입니다. JWT 인증이 필요합니다.")
+    public PolicyAiSummaryResponse getSummary(@AuthenticationPrincipal Jwt jwt, @PathVariable Long policyId) {
+        return policySummaryService.getSummary(userId(jwt), policyId);
     }
 
     @GetMapping("/{policyId}")

@@ -9,6 +9,7 @@ import com.springboot.aicareyongin.domain.household.repository.HouseholdProfileR
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
@@ -29,11 +30,21 @@ public class MatchProfileReader {
     private final HouseholdProfileRepository profileRepository;
     private final ChildRepository childRepository;
 
+    /** 가구 정보가 없으면 404 */
     @Transactional(readOnly = true)
     public MatchProfile read(Long userId) {
-        authService.getActiveUser(userId);
-        HouseholdProfile profile = profileRepository.findByUserId(userId)
+        return readIfPresent(userId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "등록된 가구 정보가 없습니다."));
+    }
+
+    /** 가구 정보가 없으면 빈 값. 가구 정보 없이도 쓸 수 있는 기능(정책 요약 등)에서 쓴다. */
+    @Transactional(readOnly = true)
+    public Optional<MatchProfile> readIfPresent(Long userId) {
+        authService.getActiveUser(userId);
+        return profileRepository.findByUserId(userId).map(this::toMatchProfile);
+    }
+
+    private MatchProfile toMatchProfile(HouseholdProfile profile) {
         List<ChildGrade> grades = childRepository.findAllByProfileIdOrderByIdAsc(profile.getId()).stream()
                 .map(Child::getGradeOrder)
                 .map(ChildGrade::fromGradeOrder)
