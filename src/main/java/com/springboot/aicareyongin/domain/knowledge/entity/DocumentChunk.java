@@ -43,7 +43,7 @@ public class DocumentChunk {
     @Column(name = "content", nullable = false, columnDefinition = "text")
     private String content;
 
-    // 임베딩은 우선 ERD의 text 타입으로 저장한다.
+    // 임베딩은 ERD의 text 타입으로 저장한다.
     @Column(name = "embedding", columnDefinition = "text")
     private String embedding;
 
