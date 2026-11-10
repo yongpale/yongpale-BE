@@ -67,7 +67,8 @@
         "용인시 2년 이상 거주",
         "대회 수상 실적"
       ],
-      "apply_period": "2월 말 공고(내용 및 신청기간) 확인 후 방문 신청"
+      "apply_period": "2월 말 공고(내용 및 신청기간) 확인 후 방문 신청",
+      "notes": null
     }
   },
   {
@@ -143,7 +144,8 @@
         "용인시 2년 이상 거주",
         "다문화가정"
       ],
-      "apply_period": "2월 말 공고(내용 및 신청기간) 확인 후 방문 신청"
+      "apply_period": "2월 말 공고(내용 및 신청기간) 확인 후 방문 신청",
+      "notes": null
     }
   },
   {
@@ -214,7 +216,8 @@
         "용인시 2년 이상 거주",
         "독립유공자 또는 국가유공자 후손"
       ],
-      "apply_period": "2월 말 공고(내용 및 신청기간) 확인 후 방문 신청"
+      "apply_period": "2월 말 공고(내용 및 신청기간) 확인 후 방문 신청",
+      "notes": null
     }
   },
   {
@@ -284,7 +287,8 @@
         "용인시 30년 이상 거주",
         "성적우수"
       ],
-      "apply_period": "2월 말 공고(내용 및 신청기간) 확인 후 방문 신청"
+      "apply_period": "2월 말 공고(내용 및 신청기간) 확인 후 방문 신청",
+      "notes": null
     }
   },
   {
@@ -354,7 +358,8 @@
         "용인시 2년 이상 거주",
         "효행 사유"
       ],
-      "apply_period": "2월 말 공고(내용 및 신청기간) 확인 후 방문 신청"
+      "apply_period": "2월 말 공고(내용 및 신청기간) 확인 후 방문 신청",
+      "notes": null
     }
   },
   {
@@ -419,7 +424,8 @@
       "other_requirements": [
         "결식 우려"
       ],
-      "apply_period": "상시신청"
+      "apply_period": "상시신청",
+      "notes": null
     }
   },
   {
@@ -487,7 +493,8 @@
       "other_requirements": [
         "다문화가족 자녀"
       ],
-      "apply_period": "상시신청"
+      "apply_period": "상시신청",
+      "notes": null
     }
   },
   {
@@ -556,7 +563,8 @@
         "독거 또는 취약가구",
         "최중증 장애"
       ],
-      "apply_period": "상시신청"
+      "apply_period": "상시신청",
+      "notes": null
     }
   },
   {
@@ -628,7 +636,8 @@
         "한부모가족",
         "조손가족"
       ],
-      "apply_period": "상시신청"
+      "apply_period": "상시신청",
+      "notes": null
     }
   },
   {
@@ -697,7 +706,8 @@
       "low_income_only": true,
       "income_limit": "국민기초생활보장 수급자(교육급여)",
       "other_requirements": [],
-      "apply_period": null
+      "apply_period": null,
+      "notes": null
     }
   },
   {
@@ -765,7 +775,8 @@
       "low_income_only": true,
       "income_limit": "국민기초생활수급자 중 생계·의료·주거·교육급여 수급자",
       "other_requirements": [],
-      "apply_period": "상시신청"
+      "apply_period": "상시신청",
+      "notes": null
     }
   },
   {
@@ -836,7 +847,8 @@
       "other_requirements": [
         "특수교육대상학생"
       ],
-      "apply_period": "상시신청"
+      "apply_period": "상시신청",
+      "notes": null
     }
   },
   {
@@ -906,7 +918,8 @@
         "특수교육대상학생",
         "원거리 통학"
       ],
-      "apply_period": "접수기관 별 상이"
+      "apply_period": "접수기관 별 상이",
+      "notes": null
     }
   },
   {
@@ -978,7 +991,8 @@
         "특수교육대상학생",
         "특수학교 재학생"
       ],
-      "apply_period": "상시신청"
+      "apply_period": "상시신청",
+      "notes": null
     }
   },
   {
@@ -1047,7 +1061,8 @@
       "other_requirements": [
         "특수교육대상자"
       ],
-      "apply_period": "상시신청"
+      "apply_period": "상시신청",
+      "notes": null
     }
   },
   {
@@ -1116,7 +1131,8 @@
       "low_income_only": true,
       "income_limit": "기준 중위소득의 50% 이하",
       "other_requirements": [],
-      "apply_period": "상시신청"
+      "apply_period": "상시신청",
+      "notes": null
     }
   },
   {
@@ -1196,7 +1212,8 @@
         "다문화학생",
         "탈북학생"
       ],
-      "apply_period": "상시신청"
+      "apply_period": "상시신청",
+      "notes": null
     }
   },
   {
@@ -1266,7 +1283,8 @@
       "low_income_only": true,
       "income_limit": "중위소득 80~100% 이하",
       "other_requirements": [],
-      "apply_period": "상시신청"
+      "apply_period": "상시신청",
+      "notes": null
     }
   },
   {
@@ -1345,7 +1363,8 @@
         "보훈 교육지원대상자",
         "특수교육대상자(특수학교 장학)"
       ],
-      "apply_period": "매년 4월, 9월"
+      "apply_period": "매년 4월, 9월",
+      "notes": null
     }
   },
   {
@@ -1416,7 +1435,8 @@
         "국가보훈대상자 미성년 자녀",
         "부양의무자가 없는 경우"
       ],
-      "apply_period": "상시신청"
+      "apply_period": "상시신청",
+      "notes": null
     }
   },
   {
@@ -1478,7 +1498,8 @@
       "low_income_only": true,
       "income_limit": "기초, 차상위가구(생계, 의료, 주거, 교육급여 수급 가구 및 차상위 계층)",
       "other_requirements": [],
-      "apply_period": "자세한 날짜는 읍면동 주민센터에 따라 다를 수 있음"
+      "apply_period": "자세한 날짜는 읍면동 주민센터에 따라 다를 수 있음",
+      "notes": null
     }
   },
   {
@@ -1549,7 +1570,8 @@
       "other_requirements": [
         "긴급복지 주지원 대상 가구"
       ],
-      "apply_period": "상시신청"
+      "apply_period": "상시신청",
+      "notes": null
     }
   },
   {
@@ -1616,7 +1638,8 @@
       "other_requirements": [
         "발달장애인"
       ],
-      "apply_period": "상시신청"
+      "apply_period": "상시신청",
+      "notes": null
     }
   },
   {
@@ -1688,7 +1711,8 @@
       "other_requirements": [
         "18세 미만 중증장애아동"
       ],
-      "apply_period": "상시신청"
+      "apply_period": "상시신청",
+      "notes": null
     }
   },
   {
@@ -1756,7 +1780,8 @@
         "만6세~만65세 미만 등록 장애인",
         "활동지원등급 판정"
       ],
-      "apply_period": "상시신청"
+      "apply_period": "상시신청",
+      "notes": null
     }
   },
   {
@@ -1823,7 +1848,8 @@
       "other_requirements": [
         "발달장애인"
       ],
-      "apply_period": "상시신청"
+      "apply_period": "상시신청",
+      "notes": null
     }
   },
   {
@@ -1897,7 +1923,8 @@
       "low_income_only": true,
       "income_limit": "국민기초생활보장 수급자 및 차상위계층 등",
       "other_requirements": [],
-      "apply_period": "접수기관 별 상이"
+      "apply_period": "접수기관 별 상이",
+      "notes": null
     }
   },
   {
@@ -1962,7 +1989,8 @@
       "other_requirements": [
         "북한이탈주민 자녀"
       ],
-      "apply_period": "접수기관 별 상이"
+      "apply_period": "접수기관 별 상이",
+      "notes": null
     }
   },
   {
@@ -2028,7 +2056,8 @@
         "북한이탈주민 자녀",
         "탈북청소년"
       ],
-      "apply_period": "접수기관 별 상이"
+      "apply_period": "접수기관 별 상이",
+      "notes": null
     }
   },
   {
@@ -2102,7 +2131,8 @@
         "외국인가족 자녀",
         "난민가족 자녀"
       ],
-      "apply_period": "상시신청"
+      "apply_period": "상시신청",
+      "notes": null
     }
   },
   {
@@ -2175,7 +2205,8 @@
       "other_requirements": [
         "다문화가족 자녀 (자녀생활서비스: 만 3~12세)"
       ],
-      "apply_period": "접수기관 별 상이"
+      "apply_period": "접수기관 별 상이",
+      "notes": null
     }
   },
   {
@@ -2243,7 +2274,8 @@
       "other_requirements": [
         "다문화가족"
       ],
-      "apply_period": "접수기관 별 상이"
+      "apply_period": "접수기관 별 상이",
+      "notes": null
     }
   },
   {
@@ -2311,7 +2343,8 @@
       "other_requirements": [
         "다문화가족"
       ],
-      "apply_period": "접수기관 별 상이"
+      "apply_period": "접수기관 별 상이",
+      "notes": null
     }
   },
   {
@@ -2381,10 +2414,9 @@
       "multi_child": "preferred",
       "low_income_only": false,
       "income_limit": "기준 중위소득 200% 이하",
-      "other_requirements": [
-        "양육 공백 가정(맞벌이·한부모·장애부모·다자녀 등)이면 소득에 따라 정부 지원"
-      ],
-      "apply_period": "상시신청"
+      "other_requirements": [],
+      "apply_period": "상시신청",
+      "notes": "양육 공백 가정(맞벌이·한부모·장애부모·다자녀 등)이면 소득에 따라 정부 지원"
     }
   },
   {
@@ -2463,7 +2495,8 @@
       "other_requirements": [
         "다문화가족"
       ],
-      "apply_period": "해마다 다르며 대략적으로 5-7월 사이"
+      "apply_period": "해마다 다르며 대략적으로 5-7월 사이",
+      "notes": null
     }
   },
   {
@@ -2545,7 +2578,8 @@
         "미취학자",
         "학업중단자"
       ],
-      "apply_period": "상시신청"
+      "apply_period": "상시신청",
+      "notes": null
     }
   }
 ]
