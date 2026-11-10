@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 ### Gradle ###
 .gradle/
 build/
@@ -19,3 +20,16 @@ application-secret.yml
 application.yml
 
 .DS_Store
+=======
+.gradle/
+build/
+.idea/
+*.iml
+.env
+.env.*
+!.env.example
+application-local.yml
+application-local.yaml
+application-local.properties
+>>>>>>> Stashed changes
+.gradle/
