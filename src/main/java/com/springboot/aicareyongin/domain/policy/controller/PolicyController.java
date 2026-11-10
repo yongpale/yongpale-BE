@@ -2,6 +2,7 @@ package com.springboot.aicareyongin.domain.policy.controller;
 
 import com.springboot.aicareyongin.domain.policy.dto.PolicyDetailResponse;
 import com.springboot.aicareyongin.domain.policy.dto.PolicySummaryResponse;
+import com.springboot.aicareyongin.domain.policy.dto.RequiredDocumentsResponse;
 import com.springboot.aicareyongin.domain.policy.enums.PolicyCategory;
 import com.springboot.aicareyongin.domain.policy.service.PolicyService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -39,5 +40,12 @@ public class PolicyController {
     @Operation(summary = "정책 상세 조회", description = "없거나 비활성인 정책이면 404를 반환합니다. JWT 인증이 필요합니다.")
     public PolicyDetailResponse getPolicy(@PathVariable Long policyId) {
         return policyService.getPolicy(policyId);
+    }
+
+    @GetMapping("/{policyId}/required-documents")
+    @Operation(summary = "필요 서류 조회", description = "신청에 필요한 서류 목록입니다. 서류 정보가 없는 정책은 빈 배열을 반환합니다. "
+            + "없거나 비활성인 정책이면 404를 반환합니다. JWT 인증이 필요합니다.")
+    public RequiredDocumentsResponse getRequiredDocuments(@PathVariable Long policyId) {
+        return policyService.getRequiredDocuments(policyId);
     }
 }

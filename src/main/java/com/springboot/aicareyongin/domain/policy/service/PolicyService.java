@@ -2,6 +2,7 @@ package com.springboot.aicareyongin.domain.policy.service;
 
 import com.springboot.aicareyongin.domain.policy.dto.PolicyDetailResponse;
 import com.springboot.aicareyongin.domain.policy.dto.PolicySummaryResponse;
+import com.springboot.aicareyongin.domain.policy.dto.RequiredDocumentsResponse;
 import com.springboot.aicareyongin.domain.policy.entity.Policy;
 import com.springboot.aicareyongin.domain.policy.enums.PolicyCategory;
 import com.springboot.aicareyongin.domain.policy.repository.PolicyRepository;
@@ -35,10 +36,19 @@ public class PolicyService {
     }
 
     public PolicyDetailResponse getPolicy(Long policyId) {
-        Policy policy = policyRepository.findById(policyId)
+        Policy policy = findActivePolicy(policyId);
+        return PolicyDetailResponse.of(policy, readDocuments(policy));
+    }
+
+    public RequiredDocumentsResponse getRequiredDocuments(Long policyId) {
+        Policy policy = findActivePolicy(policyId);
+        return RequiredDocumentsResponse.of(policy, readDocuments(policy));
+    }
+
+    private Policy findActivePolicy(Long policyId) {
+        return policyRepository.findById(policyId)
                 .filter(Policy::isActive)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "존재하지 않는 정책입니다."));
-        return PolicyDetailResponse.of(policy, readDocuments(policy));
     }
 
     // required_documents는 문자열 JSON 배열로 저장되어 있다.
