@@ -1,6 +1,8 @@
 package com.springboot.aicareyongin.domain.auth.config;
 
 import com.springboot.aicareyongin.domain.auth.security.KakaoLoginSuccessHandler;
+import com.springboot.aicareyongin.domain.auth.security.SessionJwtAuthenticationConverter;
+import org.springframework.security.oauth2.server.resource.web.DefaultBearerTokenResolver;
 import com.springboot.aicareyongin.domain.auth.service.KakaoUserService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
@@ -17,7 +19,9 @@ import org.springframework.security.web.savedrequest.NullRequestCache;
 public class SecurityConfig {
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http, KakaoUserService kakaoUserService,
-                                            KakaoLoginSuccessHandler successHandler) throws Exception {
+                                            KakaoLoginSuccessHandler successHandler,
+                                            SessionJwtAuthenticationConverter jwtConverter) throws Exception {
+        DefaultBearerTokenResolver bearerTokens = new DefaultBearerTokenResolver();
         http
                 // API 인증은 Authorization 헤더의 JWT만 사용한다. OAuth 로그인은 state를 별도 검증한다.
                 .csrf(AbstractHttpConfigurer::disable)
@@ -30,6 +34,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/api/v1/auth/kakao", "/api/v1/auth/kakao/callback-page",
                                 "/oauth2/authorization/kakao", "/error").permitAll()
+                        .requestMatchers(org.springframework.http.HttpMethod.POST,
+                                "/api/v1/auth/refresh", "/api/v1/auth/logout").permitAll()
                         // Swagger UI와 API 문서. 문서만 공개하고 API 호출에는 여전히 JWT가 필요하다.
                         .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .anyRequest().authenticated())
@@ -49,7 +55,14 @@ public class SecurityConfig {
                             response.setHeader("Cache-Control", "no-store");
                             response.getWriter().write("{\"code\":\"KAKAO_LOGIN_FAILED\",\"message\":\"카카오 로그인에 실패했습니다. 다시 시도해 주세요.\"}");
                         }))
-                .oauth2ResourceServer(resource -> resource.jwt(jwt -> {}));
+                .oauth2ResourceServer(resource -> resource
+                        .bearerTokenResolver(request -> {
+                            String path = request.getRequestURI().substring(request.getContextPath().length());
+                            if ("POST".equals(request.getMethod()) && ("/api/v1/auth/refresh".equals(path)
+                                    || "/api/v1/auth/logout".equals(path))) return null;
+                            return bearerTokens.resolve(request);
+                        })
+                        .jwt(jwt -> jwt.jwtAuthenticationConverter(jwtConverter)));
         return http.build();
     }
 }

@@ -1,7 +1,6 @@
 package com.springboot.aicareyongin.domain.auth.security;
 
-import com.springboot.aicareyongin.domain.auth.service.AuthService;
-import com.springboot.aicareyongin.domain.auth.service.JwtService;
+import com.springboot.aicareyongin.domain.auth.service.TokenSessionService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -15,8 +14,7 @@ import tools.jackson.databind.json.JsonMapper;
 @Component
 @RequiredArgsConstructor
 public class KakaoLoginSuccessHandler implements AuthenticationSuccessHandler {
-    private final AuthService authService;
-    private final JwtService jwtService;
+    private final TokenSessionService tokenSessions;
     private final JsonMapper mapper;
 
     @Override
@@ -24,7 +22,7 @@ public class KakaoLoginSuccessHandler implements AuthenticationSuccessHandler {
                                         Authentication authentication) throws IOException {
         KakaoPrincipal principal = (KakaoPrincipal) authentication.getPrincipal();
         try {
-            var token = jwtService.issue(authService.getActiveUser(principal.userId()));
+            var token = tokenSessions.login(principal.userId());
             response.setContentType("application/json;charset=UTF-8");
             response.setHeader("Cache-Control", "no-store");
             response.setHeader("Pragma", "no-cache");
