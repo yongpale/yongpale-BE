@@ -68,4 +68,14 @@ public class HouseholdProfile extends BaseTimeEntity {
 
     @Column(name = "care_need_end_time")
     private LocalTime careNeedEndTime;
+
+    public void updateRegion(Region region) {
+        this.region = region;
+    }
+
+    public void updateSituations(boolean dualIncome, boolean singleParent, boolean multiChild) {
+        this.isDualIncome = dualIncome;
+        this.isSingleParent = singleParent;
+        this.isMultiChild = multiChild;
+    }
 }
