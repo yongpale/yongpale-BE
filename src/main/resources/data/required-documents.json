@@ -1,0 +1,137 @@
+{
+  "_comment": "필요 서류 화면용 데이터. documents = 서류 목록(발급처·발급 링크), policies = 정책별 필요 서류(policies.json의 texts.documents 정리). 발급 링크는 2026-11-11 정부24·대법원 사이트에서 직접 열어 확인함. policies[].svcId는 policies.source_url의 svcId.",
+  "verifiedAt": "2026-11-11",
+  "documents": [
+    {"code": "RESIDENT_REGISTRATION", "name": "주민등록표 등본", "issuer": "정부24", "issueUrl": "https://plus.gov.kr/search/searchdtl?srvcId=13100000015&typeSn=01"},
+    {"code": "FAMILY_RELATION", "name": "가족관계증명서", "issuer": "대법원 전자가족관계등록시스템", "issueUrl": "https://efamily.scourt.go.kr/index.jsp"},
+    {"code": "BASIC_CERTIFICATE", "name": "기본증명서", "issuer": "대법원 전자가족관계등록시스템", "issueUrl": "https://efamily.scourt.go.kr/index.jsp"},
+    {"code": "REMOVED_REGISTER", "name": "제적등본", "issuer": "대법원 전자가족관계등록시스템", "issueUrl": "https://efamily.scourt.go.kr/index.jsp"},
+    {"code": "HEALTH_INSURANCE_PAYMENT", "name": "건강보험료 납부확인서", "issuer": "정부24", "issueUrl": "https://plus.gov.kr/search/searchdtl?srvcId=SG4CADM2017&typeSn=01"},
+    {"code": "HEALTH_INSURANCE_QUALIFICATION", "name": "건강보험 자격득실 확인서", "issuer": "정부24", "issueUrl": "https://plus.gov.kr/search/searchdtl?srvcId=PG4CADM0107&typeSn=01"},
+    {"code": "HEALTH_INSURANCE_CARD", "name": "건강보험증 사본", "issuer": "국민건강보험공단", "issueUrl": null},
+    {"code": "BASIC_LIVELIHOOD", "name": "국민기초생활수급자 증명서", "issuer": "정부24", "issueUrl": "https://plus.gov.kr/search/searchdtl?srvcId=14600000280&typeSn=01"},
+    {"code": "NEAR_POVERTY", "name": "차상위계층 확인서", "issuer": "정부24", "issueUrl": "https://plus.gov.kr/search/searchdtl?srvcId=13520000098&typeSn=01"},
+    {"code": "DISABILITY", "name": "장애인증명서", "issuer": "정부24", "issueUrl": "https://plus.gov.kr/search/searchdtl?srvcId=14600000273&typeSn=01"},
+    {"code": "FOREIGNER_REGISTRATION", "name": "외국인등록 사실증명", "issuer": "정부24", "issueUrl": "https://plus.gov.kr/search/searchdtl?srvcId=12700000027&typeSn=01"},
+    {"code": "INCOME_AMOUNT", "name": "소득금액증명", "issuer": "정부24", "issueUrl": "https://plus.gov.kr/search/searchdtl?srvcId=12100000021&typeSn=01"},
+    {"code": "FACT_CERTIFICATE", "name": "사실증명", "issuer": "정부24", "issueUrl": "https://plus.gov.kr/search/searchdtl?srvcId=12100000352&typeSn=01"},
+    {"code": "NK_DEFECTOR", "name": "북한이탈주민등록확인서", "issuer": "정부24", "issueUrl": "https://plus.gov.kr/search/searchdtl?srvcId=12500000065&typeSn=01"},
+    {"code": "SCHOOL_ENROLLMENT", "name": "재학증명서", "issuer": "정부24", "issueUrl": "https://plus.gov.kr/search/searchdtl?srvcId=13410000017&typeSn=01"},
+    {"code": "SCHOOL_GRADE", "name": "성적증명서", "issuer": "학교 발급", "issueUrl": null},
+    {"code": "TUITION_PAYMENT", "name": "수업료 납입증명서", "issuer": "학교 발급", "issueUrl": null},
+    {"code": "EMPLOYMENT", "name": "재직증명서", "issuer": "직장 발급", "issueUrl": null},
+    {"code": "INCOME_PROOF", "name": "소득·재산 확인서류", "issuer": "직장·관련 기관 발급", "issueUrl": null},
+    {"code": "BANKBOOK", "name": "통장 사본", "issuer": "본인 은행", "issueUrl": null},
+    {"code": "ID_CARD", "name": "신분증", "issuer": "본인 지참", "issueUrl": null},
+    {"code": "APPLICATION_FORM", "name": "신청서", "issuer": "신청 페이지", "issueUrl": null},
+    {"code": "CONSENT_FORM", "name": "개인정보 수집·이용 동의서", "issuer": "신청 페이지", "issueUrl": null},
+    {"code": "OTHER", "name": "기타 증빙서류", "issuer": "신청 기관 문의", "issueUrl": null}
+  ],
+  "policies": [
+    {"svcId": "641000000171", "title": "결식아동급식지원", "documents": [
+      {"code": "APPLICATION_FORM", "note": "급식신청서"},
+      {"code": "BASIC_LIVELIHOOD", "note": "소득 확인: 기초생활수급자인 경우"},
+      {"code": "HEALTH_INSURANCE_PAYMENT", "note": "소득 확인: 건강보험료 납부 증명"},
+      {"code": "EMPLOYMENT", "note": "결식 우려 확인 증빙 (재직증명서, 질병진단서 등)"}
+    ]},
+    {"svcId": "641000000122", "title": "다문화가족 자녀 방문학습지 지원", "documents": []},
+    {"svcId": "753000000223", "title": "특수교육학생 및 학부모 원거리 통학비 지원", "documents": [
+      {"code": "APPLICATION_FORM", "note": "통학비지원신청서"},
+      {"code": "CONSENT_FORM", "note": null},
+      {"code": "RESIDENT_REGISTRATION", "note": null},
+      {"code": "BANKBOOK", "note": null}
+    ]},
+    {"svcId": "134200000003", "title": "교육급여", "documents": [
+      {"code": "APPLICATION_FORM", "note": "사회보장급여 신청(변경)서, 소득재산신고서, 금융정보 등 제공동의서"},
+      {"code": "INCOME_PROOF", "note": "급여명세서 등 소득·재산 확인서류, 임대차 계약서"},
+      {"code": "REMOVED_REGISTER", "note": "해당자만"},
+      {"code": "FOREIGNER_REGISTRATION", "note": "외국인인 경우"},
+      {"code": "ID_CARD", "note": "신청인(대리 신청 시 대리인과 위임장)"}
+    ]},
+    {"svcId": "GES000000150", "title": "방과후학교 자유수강권", "documents": [
+      {"code": "APPLICATION_FORM", "note": "온라인 신청 가능. 방문 시 신청서, 소득·재산 신고서, 금융정보 등 제공 동의서 (관할 주민센터 문의)"},
+      {"code": "INCOME_PROOF", "note": "방문 신청 시"}
+    ]},
+    {"svcId": "183000000006", "title": "국가보훈대상자 보훈장학금 지원", "documents": [
+      {"code": "SCHOOL_GRADE", "note": "직전 학기, 백분율 환산점수 기재, 1부"},
+      {"code": "SCHOOL_ENROLLMENT", "note": "1부"},
+      {"code": "TUITION_PAYMENT", "note": "당해 연도 당해 학기, 1부"},
+      {"code": "BASIC_LIVELIHOOD", "note": "저소득자만, 1부"},
+      {"code": "NEAR_POVERTY", "note": "저소득자만, 1부"}
+    ]},
+    {"svcId": "183000000019", "title": "국가보훈대상자 자녀 등 양육지원", "documents": [
+      {"code": "APPLICATION_FORM", "note": null}
+    ]},
+    {"svcId": "SD0000016137", "title": "긴급복지 교육지원", "documents": [
+      {"code": "ID_CARD", "note": null},
+      {"code": "OTHER", "note": "기타 구비서류는 긴급복지지원 담당 공무원과 상담"}
+    ]},
+    {"svcId": "135200005037", "title": "발달장애인 긴급돌봄 시범사업", "documents": [
+      {"code": "APPLICATION_FORM", "note": "발달장애인 긴급돌봄센터 이용신청서 1부"},
+      {"code": "CONSENT_FORM", "note": "개인정보 수집·이용 및 제3자 제공 동의서 1부"},
+      {"code": "RESIDENT_REGISTRATION", "note": "또는 발달장애인이 등재된 가족관계증명서, 1부"},
+      {"code": "FAMILY_RELATION", "note": "주민등록표 등본 대신 제출 가능"},
+      {"code": "DISABILITY", "note": "또는 장애인복지카드 사본, 장애수당 확인서 등 1부"},
+      {"code": "BASIC_LIVELIHOOD", "note": "우선지원 대상자 증명: 수급자인 경우"},
+      {"code": "NEAR_POVERTY", "note": "우선지원 대상자 증명: 차상위계층인 경우"},
+      {"code": "OTHER", "note": "긴급돌봄 상황 증빙서류"}
+    ]},
+    {"svcId": "SPE000000120", "title": "장애아가족 양육 지원", "documents": [
+      {"code": "APPLICATION_FORM", "note": "사회복지서비스 및 급여 제공(변경) 신청서"},
+      {"code": "CONSENT_FORM", "note": "개인 정보 제공 및 활용 동의서"},
+      {"code": "HEALTH_INSURANCE_CARD", "note": "서비스 대상자가 등재된 것"},
+      {"code": "INCOME_PROOF", "note": "기타 소득증명자료"}
+    ]},
+    {"svcId": "VOU000000020", "title": "장애인 활동지원", "documents": [
+      {"code": "APPLICATION_FORM", "note": "사회복지서비스 및 사회보장급여 신청(변경)서, 바우처카드 발급 신청서(카드 보유자는 생략)"},
+      {"code": "HEALTH_INSURANCE_CARD", "note": "주민등록표상 구성원이 같으면 생략 가능"},
+      {"code": "BANKBOOK", "note": null},
+      {"code": "DISABILITY", "note": "공무원이 확인할 수 없는 경우"},
+      {"code": "OTHER", "note": "장애정도 심사 대상자는 심사용 진단서·소견서 등, 가구 상황별 증빙"}
+    ]},
+    {"svcId": "135200000132", "title": "청소년 발달장애인 방과후활동서비스", "documents": [
+      {"code": "APPLICATION_FORM", "note": "사회보장급여(사회서비스이용권) 신청(변경)서, 바우처카드 발급 신청서"},
+      {"code": "SCHOOL_ENROLLMENT", "note": null},
+      {"code": "DISABILITY", "note": "공무원이 확인할 수 없는 경우"},
+      {"code": "OTHER", "note": "유사 서비스 이용 확인서"}
+    ]},
+    {"svcId": "B55284200008", "title": "북한이탈주민 자녀 학습지 지원", "documents": [
+      {"code": "APPLICATION_FORM", "note": "우편 접수 시 신청서 1부, 서약서 1부"},
+      {"code": "CONSENT_FORM", "note": "우편 접수 시 1부"},
+      {"code": "NK_DEFECTOR", "note": "우편 접수 시 1부"},
+      {"code": "RESIDENT_REGISTRATION", "note": "주민번호 뒷자리 생략, 3개월 이내 발급"},
+      {"code": "BASIC_LIVELIHOOD", "note": "해당자만, 3개월 이내 발급"}
+    ]},
+    {"svcId": "PTR000050660", "title": "다문화가족 방문교육서비스", "documents": [
+      {"code": "CONSENT_FORM", "note": "개인정보·민감정보 수집·이용 동의서, 제3자 제공 동의서"},
+      {"code": "APPLICATION_FORM", "note": "회원등록 신청서, 프로그램 신청서, 본인부담금 사업 신청서"},
+      {"code": "RESIDENT_REGISTRATION", "note": "결혼이민자 또는 귀화자가 등본에 기재된 경우"},
+      {"code": "FAMILY_RELATION", "note": "등본에 없으면 가족관계증명서와 외국인등록증 또는 여권 사본"}
+    ]},
+    {"svcId": "138300000021", "title": "다문화가족 이중언어 교육지원", "documents": [
+      {"code": "CONSENT_FORM", "note": "개인정보 수집·이용 동의서, 제3자 제공 동의서"},
+      {"code": "APPLICATION_FORM", "note": "회원 등록 신청서, 프로그램 신청서"},
+      {"code": "RESIDENT_REGISTRATION", "note": "결혼이민자 또는 귀화자가 등본에 기재된 경우 (아래 가족관계증명서와 둘 중 하나)"},
+      {"code": "FAMILY_RELATION", "note": "가족관계증명서와 외국인등록증 또는 여권 사본 (위 등본과 둘 중 하나)"}
+    ]},
+    {"svcId": "WII000001250", "title": "다문화가족 자녀 언어발달 지원서비스", "documents": [
+      {"code": "CONSENT_FORM", "note": "개인정보·민감정보 수집·이용 동의서, 제3자 제공 동의서"},
+      {"code": "APPLICATION_FORM", "note": "회원등록 신청서, 프로그램 신청서"},
+      {"code": "RESIDENT_REGISTRATION", "note": "주민등록 등재 시: 결혼이민자 또는 귀화자가 등본에 기재된 것"},
+      {"code": "FAMILY_RELATION", "note": "주민등록 미등재 시: 가족관계증명서와 외국인등록증 또는 여권 사본"}
+    ]},
+    {"svcId": "423000000362", "title": "아이돌봄 서비스", "documents": [
+      {"code": "EMPLOYMENT", "note": "직장건강보험 미가입자만: 취업 증빙 (직장건강보험 가입자는 증빙 불필요)"},
+      {"code": "INCOME_AMOUNT", "note": "직장건강보험 미가입자만: 소득 증빙"}
+    ]},
+    {"svcId": "138300000057", "title": "저소득 다문화 자녀 교육활동비 지원", "documents": [
+      {"code": "APPLICATION_FORM", "note": "다문화가족 자녀 교육활동비 지원 신청(변경)서 (개인정보제공동의서 포함)"},
+      {"code": "RESIDENT_REGISTRATION", "note": "결혼이민자 또는 귀화자가 등본에 기재된 것"},
+      {"code": "FAMILY_RELATION", "note": "부부·부모-자녀 관계 확인용, 외국인등록증 또는 여권 사본과 함께"},
+      {"code": "BASIC_CERTIFICATE", "note": "국적을 취득해 외국인등록증 확인이 어려운 결혼이민자"},
+      {"code": "HEALTH_INSURANCE_PAYMENT", "note": "미성년 자녀의 가구원 각각 1부"},
+      {"code": "FACT_CERTIFICATE", "note": "등본상 피부양자인 경우 (또는 소득금액증명)"}
+    ]},
+    {"svcId": "B09002700001", "title": "의무교육단계 미취학‧학업중단학생 학습지원(꿈이음)", "documents": []}
+  ]
+}
