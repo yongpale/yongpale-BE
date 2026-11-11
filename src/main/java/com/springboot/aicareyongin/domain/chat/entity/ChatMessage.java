@@ -1,7 +1,9 @@
 package com.springboot.aicareyongin.domain.chat.entity;
 
+import com.springboot.aicareyongin.domain.chat.enums.ChatFeedback;
 import com.springboot.aicareyongin.domain.chat.enums.ChatRole;
 import com.springboot.aicareyongin.domain.household.entity.HouseholdProfile;
+import com.springboot.aicareyongin.domain.user.entity.User;
 import com.springboot.aicareyongin.global.entity.BaseCreatedTimeEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -25,7 +27,8 @@ import org.hibernate.type.SqlTypes;
 
 @Entity
 @Table(name = "chat_messages", indexes = {
-        @Index(name = "idx_chat_messages_session", columnList = "chat_session_id, created_at")
+        @Index(name = "idx_chat_messages_session", columnList = "chat_session_id, created_at"),
+        @Index(name = "idx_chat_messages_user", columnList = "user_id")
 })
 @Getter
 @Builder
@@ -41,6 +44,12 @@ public class ChatMessage extends BaseCreatedTimeEntity {
     @Column(name = "chat_session_id", nullable = false, length = 64)
     private String chatSessionId;
 
+    // 대화 주인. 본인 대화인지 확인할 때 쓴다 (가구 정보가 없는 회원도 대화할 수 있어서 profile로는 확인할 수 없다).
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
+    // 질문할 때 적용된 가구 정보. 가구 정보가 없었으면 null
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "profile_id")
     private HouseholdProfile profile;
@@ -64,4 +73,13 @@ public class ChatMessage extends BaseCreatedTimeEntity {
 
     @Column(name = "latency_ms")
     private Integer latencyMs;
+
+    // 답변(ASSISTANT)에 대한 사용자 피드백. 아직 누르지 않았으면 null
+    @Enumerated(EnumType.STRING)
+    @Column(name = "feedback", length = 15)
+    private ChatFeedback feedback;
+
+    public void giveFeedback(ChatFeedback feedback) {
+        this.feedback = feedback;
+    }
 }
