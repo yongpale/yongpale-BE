@@ -73,7 +73,7 @@ public class ChatService {
         if (sessionId == null || sessionId.isBlank()) {
             sessionId = UUID.randomUUID().toString();
         } else {
-            history = history(sessionId, profile);
+            history = history(sessionId, userId);
         }
 
         String question = request.question().strip();
@@ -87,7 +87,7 @@ public class ChatService {
             throw new ResponseStatusException(HttpStatus.BAD_GATEWAY, "AI 서버 응답이 올바르지 않습니다.");
         }
 
-        ChatMessage answer = save(sessionId, profile, question, ai, latencyMs);
+        ChatMessage answer = save(sessionId, user, profile, question, ai, latencyMs);
         return toResponse(sessionId, answer.getId(), ai);
     }
 
@@ -97,22 +97,17 @@ public class ChatService {
         ChatMessage message = chatMessageRepository.findById(messageId)
                 .filter(m -> m.getRole() == ChatRole.ASSISTANT)
                 .filter(m -> m.getChatSessionId().equals(request.chatSessionId()))
+                .filter(m -> ownedBy(m, userId))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "답변을 찾을 수 없습니다."));
-        Long profileId = profileRepository.findByUserId(userId).map(HouseholdProfile::getId).orElse(null);
-        if (!ownedBy(message, profileId)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "답변을 찾을 수 없습니다.");
-        }
         message.giveFeedback(Boolean.TRUE.equals(request.helpful()) ? ChatFeedback.HELPFUL : ChatFeedback.NOT_HELPFUL);
     }
 
     /**
-     * 같은 대화의 최근 4턴(오래된 순). 대화 ID는 서버가 만든 UUID라 알고 있는 사람만 이어 쓸 수 있고,
-     * 다른 가구의 대화이면 찾을 수 없는 대화로 처리한다.
+     * 같은 대화의 최근 4턴(오래된 순). 다른 회원의 대화이면 없는 대화와 똑같이 404로 처리한다.
      */
-    private List<AiChatRequest.Turn> history(String sessionId, HouseholdProfile profile) {
+    private List<AiChatRequest.Turn> history(String sessionId, Long userId) {
         List<ChatMessage> recent = new ArrayList<>(chatMessageRepository.findTop8ByChatSessionIdOrderByIdDesc(sessionId));
-        Long profileId = profile == null ? null : profile.getId();
-        if (recent.isEmpty() || recent.stream().anyMatch(m -> !ownedBy(m, profileId))) {
+        if (recent.isEmpty() || recent.stream().anyMatch(m -> !ownedBy(m, userId))) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "대화를 찾을 수 없습니다. chatSessionId 없이 새 대화를 시작해 주세요.");
         }
         Collections.reverse(recent);
@@ -129,14 +124,15 @@ public class ChatService {
         return value.substring(0, maxLength);
     }
 
-    // 가구 정보 없이 시작한 대화(profile 없음)는 대화 ID를 가진 사람의 것으로 본다.
-    private boolean ownedBy(ChatMessage message, Long profileId) {
-        return message.getProfile() == null || Objects.equals(message.getProfile().getId(), profileId);
+    private boolean ownedBy(ChatMessage message, Long userId) {
+        return Objects.equals(message.getUser().getId(), userId);
     }
 
-    private ChatMessage save(String sessionId, HouseholdProfile profile, String question, AiChatResponse ai, int latencyMs) {
+    private ChatMessage save(String sessionId, User user, HouseholdProfile profile, String question,
+                             AiChatResponse ai, int latencyMs) {
         ChatMessage userMessage = ChatMessage.builder()
                 .chatSessionId(sessionId)
+                .user(user)
                 .profile(profile)
                 .role(ChatRole.USER)
                 .content(question)
@@ -144,6 +140,7 @@ public class ChatService {
                 .build();
         ChatMessage answer = ChatMessage.builder()
                 .chatSessionId(sessionId)
+                .user(user)
                 .profile(profile)
                 .role(ChatRole.ASSISTANT)
                 .content(answerText(ai))

@@ -41,6 +41,7 @@ import tools.jackson.databind.json.JsonMapper;
 class ChatServiceTests {
 
     private static final Long USER_ID = 1L;
+    private static final Long OTHER_USER_ID = 2L;
     private static final String SESSION = "session-1";
 
     private final AuthService authService = mock(AuthService.class);
@@ -55,12 +56,12 @@ class ChatServiceTests {
             policies, facilities, ai, JsonMapper.builder().build());
 
     private final HouseholdProfile myProfile = profile(10L);
+    private final User me = mock(User.class);
 
     @BeforeEach
     void setUp() {
-        User user = mock(User.class);
-        when(user.getNickname()).thenReturn("김용인");
-        when(authService.getActiveUser(USER_ID)).thenReturn(user);
+        when(me.getNickname()).thenReturn("김용인");
+        when(authService.getActiveUser(USER_ID)).thenReturn(me);
         when(profiles.findByUserId(USER_ID)).thenReturn(Optional.of(myProfile));
         when(matchProfileReader.readIfPresent(USER_ID)).thenReturn(Optional.empty());
 
@@ -95,13 +96,29 @@ class ChatServiceTests {
         assertThat(saved.getValue()).extracting(ChatMessage::getRole).containsExactly(ChatRole.USER, ChatRole.ASSISTANT);
         assertThat(saved.getValue().get(1).getContent()).isEqualTo("신청은 온라인으로 해요.\n1. 신청처: 온라인 페이지");
         assertThat(saved.getValue().get(1).getAnswerable()).isTrue();
+        assertThat(saved.getValue()).allSatisfy(m -> assertThat(m.getUser()).isSameAs(me));
+    }
+
+    @Test
+    void 가구_정보가_없는_회원도_본인_대화는_이어가고_다른_회원은_막는다() {
+        ChatMessage mine = message(ChatRole.USER, "질문1", USER_ID);
+        ChatMessage others = message(ChatRole.USER, "질문1", OTHER_USER_ID);
+        when(profiles.findByUserId(USER_ID)).thenReturn(Optional.empty());
+        when(messages.findTop8ByChatSessionIdOrderByIdDesc(SESSION)).thenReturn(new ArrayList<>(List.of(mine)));
+        when(ai.postLongRunning(eq("/ai/chat"), any(), eq(AiChatResponse.class))).thenReturn(answer());
+
+        assertThat(service.ask(USER_ID, new ChatMessageRequest(SESSION, "이어서 질문")).chatSessionId()).isEqualTo(SESSION);
+
+        when(messages.findTop8ByChatSessionIdOrderByIdDesc(SESSION)).thenReturn(new ArrayList<>(List.of(others)));
+        assertThatThrownBy(() -> service.ask(USER_ID, new ChatMessageRequest(SESSION, "이어서 질문")))
+                .isInstanceOf(ResponseStatusException.class).hasMessageContaining("대화를 찾을 수 없습니다");
     }
 
     @Test
     void 이어지는_질문은_이전_대화를_오래된_순으로_보낸다() {
         List<ChatMessage> recent = new ArrayList<>(List.of(
-                message(ChatRole.ASSISTANT, "답변1", myProfile),
-                message(ChatRole.USER, "질문1", myProfile)));
+                message(ChatRole.ASSISTANT, "답변1", USER_ID),
+                message(ChatRole.USER, "질문1", USER_ID)));
         when(messages.findTop8ByChatSessionIdOrderByIdDesc(SESSION)).thenReturn(recent);
         when(ai.postLongRunning(eq("/ai/chat"), any(), eq(AiChatResponse.class))).thenReturn(answer());
 
@@ -119,7 +136,7 @@ class ChatServiceTests {
         User longName = mock(User.class);
         when(longName.getNickname()).thenReturn("가".repeat(50));
         when(authService.getActiveUser(USER_ID)).thenReturn(longName);
-        List<ChatMessage> recent = new ArrayList<>(List.of(message(ChatRole.ASSISTANT, "답".repeat(3000), myProfile)));
+        List<ChatMessage> recent = new ArrayList<>(List.of(message(ChatRole.ASSISTANT, "답".repeat(3000), USER_ID)));
         when(messages.findTop8ByChatSessionIdOrderByIdDesc(SESSION)).thenReturn(recent);
         when(ai.postLongRunning(eq("/ai/chat"), any(), eq(AiChatResponse.class))).thenReturn(answer());
 
@@ -145,8 +162,8 @@ class ChatServiceTests {
     }
 
     @Test
-    void 다른_가구의_대화는_이어갈_수_없다() {
-        ChatMessage othersMessage = message(ChatRole.USER, "질문", profile(99L));
+    void 다른_회원의_대화는_이어갈_수_없다() {
+        ChatMessage othersMessage = message(ChatRole.USER, "질문", OTHER_USER_ID);
         when(messages.findTop8ByChatSessionIdOrderByIdDesc(SESSION))
                 .thenReturn(new ArrayList<>(List.of(othersMessage)));
 
@@ -165,7 +182,7 @@ class ChatServiceTests {
 
     @Test
     void 본인_답변에_피드백을_저장한다() {
-        ChatMessage answer = message(ChatRole.ASSISTANT, "답변", myProfile);
+        ChatMessage answer = message(ChatRole.ASSISTANT, "답변", USER_ID);
         when(messages.findById(5L)).thenReturn(Optional.of(answer));
 
         service.giveFeedback(USER_ID, 5L, new ChatFeedbackRequest(SESSION, false));
@@ -174,10 +191,10 @@ class ChatServiceTests {
     }
 
     @Test
-    void 다른_대화나_다른_가구의_답변에는_피드백할_수_없다() {
-        ChatMessage mine = message(ChatRole.ASSISTANT, "답변", myProfile);
-        ChatMessage others = message(ChatRole.ASSISTANT, "답변", profile(99L));
-        ChatMessage question = message(ChatRole.USER, "질문", myProfile);
+    void 다른_대화나_다른_회원의_답변에는_피드백할_수_없다() {
+        ChatMessage mine = message(ChatRole.ASSISTANT, "답변", USER_ID);
+        ChatMessage others = message(ChatRole.ASSISTANT, "답변", OTHER_USER_ID);
+        ChatMessage question = message(ChatRole.USER, "질문", USER_ID);
         when(messages.findById(5L)).thenReturn(Optional.of(mine));
         when(messages.findById(6L)).thenReturn(Optional.of(others));
         when(messages.findById(7L)).thenReturn(Optional.of(question));
@@ -198,8 +215,10 @@ class ChatServiceTests {
                 List.of(), List.of("신청 기간 알려줘"));
     }
 
-    private ChatMessage message(ChatRole role, String content, HouseholdProfile profile) {
-        return ChatMessage.builder().chatSessionId(SESSION).profile(profile).role(role)
+    private ChatMessage message(ChatRole role, String content, Long ownerId) {
+        User owner = mock(User.class);
+        when(owner.getId()).thenReturn(ownerId);
+        return ChatMessage.builder().chatSessionId(SESSION).user(owner).profile(myProfile).role(role)
                 .content(content).citations("[]").build();
     }
 
