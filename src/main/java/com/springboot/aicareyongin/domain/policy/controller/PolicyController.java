@@ -1,5 +1,6 @@
 package com.springboot.aicareyongin.domain.policy.controller;
 
+import com.springboot.aicareyongin.domain.policy.dto.DocumentCheckRequest;
 import com.springboot.aicareyongin.domain.policy.dto.PolicyDetailResponse;
 import com.springboot.aicareyongin.domain.policy.dto.PolicyMatchListResponse;
 import com.springboot.aicareyongin.domain.policy.dto.PolicyMatchResponse;
@@ -11,6 +12,7 @@ import com.springboot.aicareyongin.domain.policy.service.PolicyService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import java.util.List;
@@ -20,6 +22,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -68,11 +72,22 @@ public class PolicyController {
     }
 
     @GetMapping("/{policyId}/required-documents")
-    @Operation(summary = "필요 서류 조회", description = "신청에 필요한 서류 체크리스트입니다. documents의 서류마다 발급처(issuer)와 "
-            + "발급 링크(issueUrl, 직접 받아야 하는 서류는 null)를 반환합니다. requiredDocuments는 정책 원문의 구비서류 목록입니다. "
+    @Operation(summary = "필요 서류 조회", description = "신청에 필요한 서류 체크리스트입니다. documents의 서류마다 발급처(issuer), "
+            + "발급 링크(issueUrl, 직접 받아야 하는 서류는 null), 내 준비 완료 체크 여부(checked)를 반환합니다. "
+            + "checkedCount / totalCount로 진행률을 표시합니다. requiredDocuments는 정책 원문의 구비서류 목록입니다. "
             + "서류 정보가 없는 정책은 빈 배열을 반환합니다. 없거나 비활성인 정책이면 404를 반환합니다. JWT 인증이 필요합니다.")
-    public RequiredDocumentsResponse getRequiredDocuments(@PathVariable Long policyId) {
-        return policyService.getRequiredDocuments(policyId);
+    public RequiredDocumentsResponse getRequiredDocuments(@AuthenticationPrincipal Jwt jwt, @PathVariable Long policyId) {
+        return policyService.getRequiredDocuments(userId(jwt), policyId);
+    }
+
+    @PutMapping("/{policyId}/required-documents/{documentCode}/check")
+    @Operation(summary = "필요 서류 준비 완료 체크", description = "서류 왼쪽 체크박스입니다. checked=true면 준비 완료로 표시하고, "
+            + "false면 해제합니다. 바뀐 체크리스트 전체를 반환합니다. documentCode는 필요 서류 조회 응답의 documents[].code입니다. "
+            + "이 정책의 서류가 아니면 404입니다. JWT 인증이 필요합니다.")
+    public RequiredDocumentsResponse checkDocument(@AuthenticationPrincipal Jwt jwt, @PathVariable Long policyId,
+                                                   @PathVariable String documentCode,
+                                                   @Valid @RequestBody DocumentCheckRequest request) {
+        return policyService.checkDocument(userId(jwt), policyId, documentCode, request.checked());
     }
 
     private Long userId(Jwt jwt) {
