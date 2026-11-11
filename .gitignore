@@ -17,7 +17,6 @@ out/
 ### 비밀값 (DB 비밀번호, API 키) ###
 .env
 application-secret.yml
-application.yml
 
 .DS_Store
 =======
