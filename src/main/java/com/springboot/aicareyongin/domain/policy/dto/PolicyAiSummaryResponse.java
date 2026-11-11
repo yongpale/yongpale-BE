@@ -31,7 +31,7 @@ public record PolicyAiSummaryResponse(
         return new PolicyAiSummaryResponse(
                 policy.getId(),
                 policy.getTitle(),
-                ai.status() == null ? null : MatchStatus.fromAi(ai.status()),
+                MatchStatus.fromAi(ai.status()),
                 ai.summary() == null ? List.of() : ai.summary(),
                 ai.summaryGenerated(),
                 ai.householdDocuments() == null ? List.of() : ai.householdDocuments(),

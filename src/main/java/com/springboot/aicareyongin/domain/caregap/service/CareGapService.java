@@ -144,7 +144,7 @@ public class CareGapService {
                     return new CareGapAnalyzeResponse.RelatedPolicy(
                             policy == null ? null : policy.getId(),
                             policy == null ? r.name() : policy.getTitle(),
-                            r.status() == null ? null : MatchStatus.fromAi(r.status()),
+                            MatchStatus.fromAi(r.status()),
                             r.reason());
                 })
                 .toList();

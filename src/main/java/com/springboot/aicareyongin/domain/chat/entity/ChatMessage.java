@@ -1,5 +1,6 @@
 package com.springboot.aicareyongin.domain.chat.entity;
 
+import com.springboot.aicareyongin.domain.chat.enums.ChatFeedback;
 import com.springboot.aicareyongin.domain.chat.enums.ChatRole;
 import com.springboot.aicareyongin.domain.household.entity.HouseholdProfile;
 import com.springboot.aicareyongin.global.entity.BaseCreatedTimeEntity;
@@ -64,4 +65,13 @@ public class ChatMessage extends BaseCreatedTimeEntity {
 
     @Column(name = "latency_ms")
     private Integer latencyMs;
+
+    // 답변(ASSISTANT)에 대한 사용자 피드백. 아직 누르지 않았으면 null
+    @Enumerated(EnumType.STRING)
+    @Column(name = "feedback", length = 15)
+    private ChatFeedback feedback;
+
+    public void giveFeedback(ChatFeedback feedback) {
+        this.feedback = feedback;
+    }
 }
