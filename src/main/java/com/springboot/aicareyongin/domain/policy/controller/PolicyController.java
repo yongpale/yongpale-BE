@@ -78,8 +78,9 @@ public class PolicyController {
     }
 
     @GetMapping("/{policyId}/required-documents")
-    @Operation(summary = "필요 서류 조회", description = "신청에 필요한 서류 목록입니다. 서류 정보가 없는 정책은 빈 배열을 반환합니다. "
-            + "없거나 비활성인 정책이면 404를 반환합니다. JWT 인증이 필요합니다.")
+    @Operation(summary = "필요 서류 조회", description = "신청에 필요한 서류 체크리스트입니다. documents의 서류마다 발급처(issuer)와 "
+            + "발급 링크(issueUrl, 직접 받아야 하는 서류는 null)를 반환합니다. requiredDocuments는 정책 원문의 구비서류 목록입니다. "
+            + "서류 정보가 없는 정책은 빈 배열을 반환합니다. 없거나 비활성인 정책이면 404를 반환합니다. JWT 인증이 필요합니다.")
     public RequiredDocumentsResponse getRequiredDocuments(@PathVariable Long policyId) {
         return policyService.getRequiredDocuments(policyId);
     }

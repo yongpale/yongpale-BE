@@ -2,7 +2,10 @@ package com.springboot.aicareyongin.domain.policy.service;
 
 import com.springboot.aicareyongin.domain.policy.dto.PolicyDetailResponse;
 import com.springboot.aicareyongin.domain.policy.dto.PolicySummaryResponse;
+import com.springboot.aicareyongin.domain.policy.document.RequiredDocumentCatalog;
+import com.springboot.aicareyongin.domain.policy.document.RequiredDocumentCatalog.DocumentType;
 import com.springboot.aicareyongin.domain.policy.dto.RequiredDocumentsResponse;
+import com.springboot.aicareyongin.domain.policy.dto.RequiredDocumentsResponse.DocumentItem;
 import com.springboot.aicareyongin.domain.policy.entity.Policy;
 import com.springboot.aicareyongin.domain.policy.enums.PolicyCategory;
 import com.springboot.aicareyongin.domain.policy.repository.PolicyRepository;
@@ -23,6 +26,7 @@ public class PolicyService {
 
     private final PolicyRepository policyRepository;
     private final JsonMapper jsonMapper;
+    private final RequiredDocumentCatalog documentCatalog;
 
     public List<PolicySummaryResponse> getPolicies(PolicyCategory category, Integer grade) {
         return policyRepository.findAll(
@@ -42,7 +46,24 @@ public class PolicyService {
 
     public RequiredDocumentsResponse getRequiredDocuments(Long policyId) {
         Policy policy = findActivePolicy(policyId);
-        return RequiredDocumentsResponse.of(policy, readDocuments(policy));
+        List<String> original = readDocuments(policy);
+        return RequiredDocumentsResponse.of(policy, documentItems(policy, original), original);
+    }
+
+    /**
+     * 정리된 서류 데이터가 있으면 발급처·발급 링크와 함께 반환한다. 신청서·동의서는 정책의 온라인 신청 주소로 연결한다.
+     * 데이터가 없는 정책은 원문 목록을 그대로 항목으로 만든다(발급처·링크 없음).
+     */
+    private List<DocumentItem> documentItems(Policy policy, List<String> original) {
+        return documentCatalog.findBySourceUrl(policy.getSourceUrl())
+                .map(documents -> documents.stream().map(document -> {
+                    DocumentType type = documentCatalog.documentType(document.code());
+                    String issueUrl = type.isFiledOnApplyPage() ? policy.getApplyUrl() : type.issueUrl();
+                    return new DocumentItem(type.code(), type.name(), document.note(), type.issuer(), issueUrl);
+                }).toList())
+                .orElseGet(() -> original.stream()
+                        .map(name -> new DocumentItem(null, name, null, null, null))
+                        .toList());
     }
 
     private Policy findActivePolicy(Long policyId) {
