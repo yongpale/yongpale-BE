@@ -5,6 +5,11 @@ import com.springboot.aicareyongin.domain.auth.security.SessionJwtAuthentication
 import org.springframework.security.oauth2.server.resource.web.DefaultBearerTokenResolver;
 import com.springboot.aicareyongin.domain.auth.service.KakaoUserService;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.List;
+import org.springframework.security.config.Customizer;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -23,6 +28,7 @@ public class SecurityConfig {
                                             SessionJwtAuthenticationConverter jwtConverter) throws Exception {
         DefaultBearerTokenResolver bearerTokens = new DefaultBearerTokenResolver();
         http
+                .cors(Customizer.withDefaults())
                 // API 인증은 Authorization 헤더의 JWT만 사용한다. OAuth 로그인은 state를 별도 검증한다.
                 .csrf(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
@@ -65,4 +71,19 @@ public class SecurityConfig {
                         .jwt(jwt -> jwt.jwtAuthenticationConverter(jwtConverter)));
         return http.build();
     }
+
+    @Bean
+    CorsConfigurationSource corsConfigurationSource(FrontendAuthProperties frontend) {
+        CorsConfiguration cors = new CorsConfiguration();
+        cors.setAllowedOrigins(frontend.allowedOrigins());
+        cors.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
+        cors.setAllowedHeaders(List.of("Authorization", "Content-Type", "Accept"));
+        // API 인증은 Bearer 토큰을 사용한다. OAuth 임시 쿠키는 브라우저 페이지 이동에서만 사용한다.
+        cors.setAllowCredentials(false);
+        cors.setMaxAge(3600L);
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/api/**", cors);
+        return source;
+    }
+
 }
