@@ -4,6 +4,13 @@ on:
   push:
     branches: [ develop ]
 
+# 배포는 한 번에 하나씩만 실행한다. 연달아 머지하면 뒤 배포는 앞 배포가 끝날 때까지 기다린다.
+# (동시에 돌면 서버의 ~/app.jar.new를 두 배포가 함께 다뤄서 mv가 실패하거나 다른 버전이 올라간다)
+# 기다리는 배포가 여러 개면 가장 최신 것만 남는데, 최신 develop에 앞선 변경이 모두 들어 있어서 문제없다.
+concurrency:
+  group: deploy-develop
+  cancel-in-progress: false
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
