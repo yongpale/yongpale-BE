@@ -77,9 +77,9 @@ public class SecurityConfig {
         CorsConfiguration cors = new CorsConfiguration();
         cors.setAllowedOrigins(frontend.allowedOrigins());
         cors.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
-        cors.setAllowedHeaders(List.of("Authorization", "Content-Type", "Accept"));
-        // API 인증은 Bearer 토큰을 사용한다. OAuth 임시 쿠키는 브라우저 페이지 이동에서만 사용한다.
-        cors.setAllowCredentials(false);
+        cors.setAllowedHeaders(List.of("*"));
+        // 명시적으로 허용한 프론트 origin에서 credentials 포함 요청을 허용한다.
+        cors.setAllowCredentials(true);
         cors.setMaxAge(3600L);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/api/**", cors);
