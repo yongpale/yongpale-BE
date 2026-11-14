@@ -7,7 +7,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "auth.frontend")
 public record FrontendAuthProperties(String successRedirectUri, List<String> allowedOrigins) {
     public FrontendAuthProperties {
-        if (successRedirectUri == null) successRedirectUri = "http://127.0.0.1:5173/home";
+        if (successRedirectUri == null) successRedirectUri = "https://yong8e.vercel.app/home";
         URI target = validateHttpUri(successRedirectUri);
         if (target.getRawQuery() != null || target.getRawFragment() != null) {
             throw new IllegalArgumentException("Frontend redirect URI must not contain a query or fragment");
